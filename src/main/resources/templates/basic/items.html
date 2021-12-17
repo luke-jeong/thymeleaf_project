@@ -2,7 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+    <!--th를 붙여서 href의 속성을 변경하면 기존 주소를 th가 붙은 주소로 덮어씌운다-->
 </head>
 <body>
 <div class="container" style="max-width: 600px">
@@ -12,8 +14,12 @@
     <div class="row">
         <div class="col">
             <button class="btn btn-primary float-end"
-                    onclick="location.href='addForm.html'" type="button">상품
+                    onclick="location.href='addForm.html'"
+                    th:onclick="|location.href='@{/basic/items/add}'|"
+                    type="button">상품
                 등록</button>
+            <!--th:onclick 시 기존 onclick말고 th를 실행한다.
+            |***|는 리터럴 대체 문법으로 ""사용시 문자와 표현식을 더할때 +를 섞어 쓸 필요 없이 한번에 사용 가능하다.-->
         </div>
     </div>
     <hr class="my-4">
@@ -29,11 +35,13 @@
             </thead>
             <tbody>
             <tr th:each="item:${items}">
+                <!--th:each는 반복 출력한다.
+                위 처럼 작성 시 items 컬렉션 데이터가 item 변수에 하나씩 포함되고 반복문 안에서 item변수를 사용할 수 있게 된다.-->
                 <td><a href="item.html" th:href="@{/basic/items/{itemId}(itemId=${item.id})}" th:text="${item.id}">회원id</a></td>
-                <!--  th:href는 해당 링크 클릭 시 이동하게되는 페이지 지정 -->
+                <!--  th:href는 해당 링크 클릭 시 이동하게되는 페이지 지정. 페이지가 랜더링 되면 th:href에 입력된 주소로 이동한다.-->
                 <td><a href="item.html" th:href="@{/basic/items/{itemId}(itemId=${item.id})}" th:text="${item.itemName}">상품명</a></td>
-                <td th:text="${item.price}">10000</td>
-                <td th:text="${item.quantity}">10</td>
+                <td th:text="${item.price}">가격</td>
+                <td th:text="${item.quantity}">개수</td>
             </tr>
             </tbody>
         </table>
@@ -41,3 +49,8 @@
 </div> <!-- /container -->
 </body>
 </html>
+
+<!--타임리프 핵심
+핵심은 th가 붙은 부분은 서버사이드에서 렌더링 되고, 기존 것을 대체한다. th 가 없으면 기존 html의 속성이 그대로 사용된다.
+HTML을 파일로 직접 열었을 때, th 가 있어도 웹 브라우저는 th 속성을 알지 못하므로 무시한다.
+따라서 HTML을 파일 보기를 유지하면서 템플릿 기능도 할 수 있다-->
